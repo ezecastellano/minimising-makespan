@@ -1,0 +1,51 @@
+set User = {request, eSend, ack}
+set Producer = {prodResponseOK,prodResponseFAIL}
+set Shipper = {shipResponseOK,shipResponseFAIL}
+set PyS = {shipRequest, prodRequest, sSend}
+set FinishActions = {g}
+set Controllable = {PyS,ack,FinishActions}
+set Alphabet = {User, Producer, PyS, Shipper}
+set Failures = {prodResponseFAIL,shipResponseFAIL}
+
+USER = (request -> WAITING), 
+WAITING = (sSend -> RCV_REQ|Failures-> GOAL),
+RCV_REQ = (eSend -> FINISH_REQ), 
+FINISH_REQ = (ack -> GOAL), 
+GOAL = (g -> GOAL).
+
+PRODUCER = (prodRequest -> PROCESSING_REQ|{Failures\{prodResponseFAIL}} -> GOAL), 
+PROCESSING_REQ = (prodResponseOK -> GOAL|Failures -> GOAL|g -> GOAL),
+GOAL = ({Failures\{prodResponseFAIL},g} -> GOAL).
+
+SHIPPER = (shipRequest -> PROCESSING_REQ|{Failures\{shipResponseFAIL}} -> GOAL), 
+PROCESSING_REQ = (shipResponseOK -> GOAL|Failures -> GOAL|g -> GOAL),
+GOAL = ({Failures\{shipResponseFAIL},g} -> GOAL).
+
+fluent PRODUCER = <prodRequest, Producer>
+
+fluent SHIPPER = <shipRequest, Shipper>
+
+fluent SEND = <sSend, eSend>
+
+fluent REQ_RCV = <request,ack>
+
+fluent OK_PRODUCER = <prodResponseOK,ack>
+
+fluent OK_SHIPPER = <shipResponseOK,ack>
+
+fluent GOAL = <FinishActions, request>
+ltl_property WORK_IF_THERE_IS_REQ = []((prodRequest || shipRequest) -> REQ_RCV)
+ltl_property SEND_WITH_INFO = [] (sSend -> (OK_PRODUCER && OK_SHIPPER))
+
+||ENV = (USER || PRODUCER || SHIPPER).
+
+controller ||C = (ENV)~{G}.
+
+||CC = (C).
+
+controllerSpec G = {
+	safety = {WORK_IF_THERE_IS_REQ,SEND_WITH_INFO}
+	liveness = {GOAL}
+	activityDefinitions={PRODUCER, SHIPPER, SEND}
+	controllable = {Controllable}
+}

@@ -1,0 +1,59 @@
+//Macros definitions 
+range Processes = 1..3
+range Types = 1..2
+set ToolsStart = {sA[Processes], sFix}
+set ToolsEnd = {eA[Processes], eFix}
+set QActions = {fail, ok}
+set ProductChoice = {type[Types]}
+set Controllable = {ToolsStart, query, begin, done}
+set Uncontrollable = {ToolsEnd, QActions, ProductChoice}
+set Alphabet = {Controllable,Uncontrollable}
+
+//LTS definitions
+PROCESS(ID=1) = (sA[ID] -> eA[ID] -> PROCESS).
+
+FIX = (sFix -> eFix -> FIX).
+
+QA = (query -> (fail -> QA | ok -> QA)).
+
+PROD = (begin -> (type[1] -> DONE | type[2] -> DONE)),
+DONE = (done -> PROD).
+
+||Environment = (PROCESS(1) || PROCESS(2) || PROCESS(3) || FIX || QA || PROD).
+
+//Fluent definitions
+fluent AC[i:Processes] = <eA[i], done>
+fluent QAFailed  = <fail, done>
+fluent Ongoing[i:Processes]  = <sA[i], eA[i]>
+fluent Type[i:Types] = <type[i], done>
+fluent QAChecked  = <{eFix,ok}, begin>
+fluent InputChosen = <ProductChoice, done>
+fluent Goal = <done, Alphabet\{done}>
+
+//For Activity Definitions
+fluent Fixing  = <sFix, eFix>
+assert Processing1 = Ongoing[1]
+assert Processing2 = Ongoing[2]
+assert Processing3 = Ongoing[3]
+
+
+//Safety Properties
+ltl_property SafetyReason = [](sA[2] -> !Ongoing[1])
+ltl_property ProcessAfterChoice = []((sA[1]||sA[2]||sA[3]) -> InputChosen)
+ltl_property FixDeffects = [] ((sFix -> QAFailed)) 
+ltl_property EnsureQA =  [] (done -> QAChecked)
+ltl_property VerifyProduct = [] (query -> ((AC[3] && Type[1]) || (AC[1] && AC[2] && Type[2])))
+
+controller ||C = (Environment)~{ControlProblem}.
+
+||Controller = (C).
+
+controllerSpec ControlProblem = {
+	safety = {SafetyReason, VerifyProduct, FixDeffects, EnsureQA, ProcessAfterChoice}
+	liveness = {Goal}
+	//heuristic = BEST
+	//activityDefinitions={Processing1,Processing2,Processing3,Fixing}
+	reachability
+	controllable = {Controllable}
+}
+
