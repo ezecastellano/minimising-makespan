@@ -106,8 +106,9 @@ assert Medicate = FMedicates
 
 controllerSpec Goal = {
 	safety = {ANALYSE_AFTER_TEST,INSPECT_AFTER_TEST, WORK_FOR_PACIENT}
-	liveness = {Cured}
+	reachability = {Cured}
 	activityDefinitions = {Stain,CountCells,Inspect,AnalyseBlood, Medicate}
+	algorithm = NON_DOMINATED
   	controllable = {Controllable}
 }
 

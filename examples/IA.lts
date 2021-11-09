@@ -50,10 +50,9 @@ controller ||C = (Environment)~{ControlProblem}.
 
 controllerSpec ControlProblem = {
 	safety = {SafetyReason, VerifyProduct, FixDeffects, EnsureQA, ProcessAfterChoice}
-	liveness = {Goal}
-	//heuristic = BEST
-	//activityDefinitions={Processing1,Processing2,Processing3,Fixing}
-	reachability
+	reachability = {Goal}
+	algorithm = NON_DOMINATED
+	activityDefinitions={Processing1,Processing2,Processing3,Fixing}
 	controllable = {Controllable}
 }
 

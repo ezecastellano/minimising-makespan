@@ -46,11 +46,8 @@ checkCompatibility ||Compatible = (Plant)~{G1}.
 
 controllerSpec G1 = {
 	safety = {S2AftF1,S1AftS4orS3,S5AftF3orS2,S1AftS6}
-	liveness = {GOAL}
-	//reachability
-	synthesis = UNIVERSAL_REACHABILITY
-	heuristic = BEST
+	reachability = {GOAL}
+	algorithm = NON_DOMINATED
 	activityDefinitions = {KEEP_WORKING}
-//	test_latency={2000,1000}
 	controllable = {Controllable}
 }

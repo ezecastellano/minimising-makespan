@@ -37,7 +37,8 @@ checkCompatibility ||Compatible = (Plant)~{G1}.
 
 controllerSpec G1 = {
 	safety = {S2AftF1, S1AftS4orS3, S5AftF3orS2, AllFinished}
-	liveness = {GOAL}
+	reachability = {GOAL}
+	algorithm = NON_DOMINATED
 	activityDefinitions = {KEEP_WORKING}
 	controllable = {Controllable}
 }

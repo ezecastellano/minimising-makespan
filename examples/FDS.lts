@@ -45,7 +45,8 @@ controller ||C = (ENV)~{G}.
 
 controllerSpec G = {
 	safety = {WORK_IF_THERE_IS_REQ,SEND_WITH_INFO}
-	liveness = {GOAL}
+	reachability = {GOAL}
 	activityDefinitions={PRODUCER, SHIPPER, SEND}
+	algorithm = NON_DOMINATED
 	controllable = {Controllable}
 }
