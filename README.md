@@ -33,7 +33,7 @@ MTSA can be installed by following the steps suggested in its [wiki](https://bit
 ```
 git clone https://bitbucket.org/lnahabedian/mtsa.git
 cd mtsa
-git switch symbolicLatencyAlgorithm
+git switch minimising-makespan
 mvn clean
 mvn install
 mvn exec:java
