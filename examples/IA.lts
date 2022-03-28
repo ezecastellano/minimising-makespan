@@ -53,6 +53,7 @@ controllerSpec ControlProblem = {
 	reachability = {Goal}
 	algorithm = NON_DOMINATED
 	activityDefinitions={Processing1,Processing2,Processing3,Fixing}
+	activityRelations={Ongoing_1 < Ongoing_2}
 	controllable = {Controllable}
 }
 
